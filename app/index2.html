@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/estilos.css">
+	<title>Horarios</title>
+	<style>
+	    #demo { border:2px solid red };
+	    
+	</style>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row mt-5">
+			<div class="col-6 my-5">
+				<h2 class="mb-3">Profesorado</h2>
+
+				<div class="list-group" id="profesorado">
+
+				<div nombre="Jose Luis Benito Andújar" class="titulo list-group-item list-group-item-primary" data-identificador="1">
+						<h5 class="mb-0">José Luis Benito Andújar (0)</h5>
+					</div>
+
+
+				<!--	<div nombre="Ángel Vela Cárdenas" class="titulo list-group-item list-group-item-success" data-identificador="4">
+						<h5 class="mb-0">Ángel Vela Cárdenas (0)</h5>
+					</div> -->
+
+
+				</div>
+				<button class="btn btn-sm btn-primary mt-3" id="toggle">Bloquear</button>
+			</div>
+
+			<div class="col-6 my-5">
+				<h2 class="mb-3" id="modulos">Módulos</h2>
+
+
+				<div class="list-group" id="tareasCompletadas">
+					<div class="list-group-item titulo" >
+						<h5>CMS1B</h5>
+					</div>
+					<div class="list-group-item" id="1" horas="6" tipo="SEC" ciclo="CSM1B" nombre="Aplicaciones Web">
+						<h5><i class="fas fa-grip-lines mr-2"></i></h5>
+						<p ></p>Aplicaciones Web ( 6 horas ) SEC </p>
+					</div>
+					<div class="list-group-item" id="2" horas="5" tipo="SEC" ciclo="DAW2" nombre="Despliegue de Aplicaciones Web" >
+						<h5><i class="fas fa-grip-lines mr-2"></i></h5>
+						<p class="mb-0"></p>Despliegue de Aplicaciones Web ( 5 horas ) SEC </p>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="demo">
+        	    
+	</div>
+    <script>
+       /* var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+           // Typical action to be performed when the document is ready:
+           document.getElementById("demo").innerHTML = xhttp.responseText;
+           let horario = JSON.parse(xhttp.responseText);
+           profesorado = document.getElementById("profesorado");
+           document.getElementById("demo").innerHTML = horario.profesorado[0].nombre;
+           let profesor = document.createElement("div");
+           profesor.style.border = "2px solid green";
+           profesor.innerHTML = horario.profesorado[0].nombre;
+           profesorado.appendChild(profesor);
+           
+        } //fin del if
+        };//fin del function
+        xhttp.open("GET", "horarios.json", true);
+        xhttp.send();*/
+        var xhr = new XMLHttpRequest(),
+    jsonArr,
+    method = "GET",
+    jsonRequestURL = "index.php";
+
+xhr.open(method, jsonRequestURL, true);
+xhr.onreadystatechange = function()
+{
+    if(xhr.readyState == 4 && xhr.status == 200)
+    {
+        // we convert your JSON into JavaScript object
+        //jsonArr = JSON.parse(xhr.responseText);
+        jsonArr = [{"honda": "accord", "color": "red"},{"ford": "focus", "color": "black"}];
+        console.log(jsonArr);
+        // we add new value:
+        jsonArr.push({"nissan": "sentra", "color": "green"});
+            console.log(jsonArr);
+        // we send with new request the updated JSON file to the server:
+        xhr.open("POST", jsonRequestURL, true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        // if you want to handle the POST response write (in this case you do not need it):
+        // xhr.onreadystatechange = function(){ /* handle POST response */ };
+        xhr.send("jsonTxt="+JSON.stringify(jsonArr));
+        // but on this place you have to have a server for write updated JSON to the file
+    }
+};
+//xhr.send(null);
+        
+    </script>
+	<script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
+	<script src="js/Sortable.min.js"></script>
+</body>
+</html>

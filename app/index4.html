@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo de Modo Clone en SortableJS</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .sortable {
+            width: 30%;
+            border: 1px solid #ccc;
+            margin: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .item {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #e2e2e2;
+            border: 1px solid #ddd;
+            cursor: move; /* Cambia el cursor para indicar que el elemento es arrastrable */
+        }
+        .cloned { color: red };
+    </style>
+</head>
+
+<body>
+
+    <h2>Ejemplo de Modo Clone en SortableJS</h2>
+    <div class="container">
+        <div id="list1" class="sortable">
+            <h3>Lista 1</h3>
+            <div class="item">Elemento A</div>
+            <div class="item">Elemento B</div>
+        </div>
+        <div id="list2" class="sortable">
+            <h3>Lista 2</h3>
+            <div class="item">Elemento 1</div>
+            <div class="item">Elemento 2</div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <script>
+        Sortable.create(document.getElementById('list1'), {
+            animation: 150,
+            group: {
+                name: 'shared',
+                pull: 'clone', // Permitir copiar elementos de lista 1
+                put: true
+            },
+            onClone: function (item) {
+                // Puedes personalizar el clone aquí si lo deseas
+                item.classList.add('cloned'); // Añadir una clase al clone para estilos si es necesario
+            }
+        });
+
+        Sortable.create(document.getElementById('list2'), {
+            animation: 150,
+            group: {
+                name: 'shared',
+                pull: "clone", // Permitir mover elementos de lista 2
+                put: true
+            },
+            onClone: function (item) {
+                // Puedes personalizar el clone aquí si lo deseas
+               // item.classList.add('cloned'); // Añadir una clase al clone para estilos si es necesario
+            }
+        });
+    </script>
+
+</body>
+
+</html>
+

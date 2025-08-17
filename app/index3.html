@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SortableJS Ejemplo - Divs Arrastrables</title>
+    <style>
+        #contenedor-sortable {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px;
+            border: 2px solid red;
+        }
+
+        .column {
+            width: 45%;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .column-header {
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .row {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #e2e2e2;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            cursor: move; /* Cambia el cursor para indicar que el elemento es arrastrable */
+        }
+
+        /* Cursor mientras se arrastra */
+        .column.sorting .row {
+            cursor: grabbing; /* Este es el cursor que se muestra mientras se arrastra el elemento */
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Ejemplo de Divs Arrastrables con SortableJS</h2>
+    <div id="contenedor-sortable">
+        <div class="column">
+            <div class="column-header">Columna 1</div>
+            <div class="row">Elemento A</div>
+            <div class="row">Elemento B</div>
+            <div class="row">Elemento C</div>
+            <div class="row">Elemento D</div>
+        </div>
+        <div class="column">
+            <div class="column-header">Columna 2</div>
+            <div class="row">Elemento 1</div>
+            <div class="row">Elemento 2</div>
+            <div class="row">Elemento 3</div>
+            <div class="row">Elemento 4</div>
+        </div>
+    </div>
+
+    <!-- Enlace CDN para SortableJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <script>
+        // Inicializa Sortable para ambas columnas
+        var columna1 = document.querySelector('.column:nth-child(1)');
+        var columna2 = document.querySelector('.column:nth-child(2)');
+
+        Sortable.create(columna1, {
+            animation: 150,
+            group: 'shared',  // Permite mover elementos entre columnas
+            handle: '.row', // Indica que el arrastre se iniciará al hacer clic en cualquier fila (div.row)
+            onStart: function(evt) {
+                evt.from.classList.add('sorting'); // Añadir clase al iniciar el arrastre
+            },
+            onEnd: function(evt) {
+                evt.from.classList.remove('sorting'); // Eliminar clase al finalizar el arrastre
+            },
+        });
+
+        Sortable.create(columna2, {
+            animation: 150,
+            group: {
+                name: 'shared',
+                pull: 'clone', // Permitir copiar elementos de lista 1
+                put: true
+            }
+            handle: '.row', // Indica que el arrastre se iniciará al hacer clic en cualquier fila (div.row)
+            onStart: function(evt) {
+                evt.from.classList.add('sorting'); // Añadir clase al iniciar el arrastre
+            },
+            onEnd: function(evt) {
+                evt.from.classList.remove('sorting'); // Eliminar clase al finalizar el arrastre
+            },
+        });
+    </script>
+
+</body>
+</html>
+
+

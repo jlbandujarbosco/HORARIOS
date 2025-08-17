@@ -1,0 +1,413 @@
+<?php
+session_start(); // Inicia la sesión
+// Verificar si el usuario está autenticado
+if (!isset($_SESSION['username'])) {
+    // Si no hay sesión iniciada, redirige al login
+    header("Location: index.php");
+    exit(); // Asegúrate de llamar a exit después de header
+}
+// Si el usuario está autenticado, muestra contenido
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="big5">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/estilos.css">
+	<title>Horarios</title>
+	<style>
+	    header { padding:10px;top:0;position:sticky;background-color:white;z-index:999;box-shadow:10px 5px 5px black;}
+	    .container-lista { overflow:scroll; border:2px solid red; height:600px;};
+	    
+	   #sortable {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px;
+            border: 2px solid red;
+            background-color:blue;
+        }
+
+        .column {
+            width: 48%;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            overflow: scroll;
+            height: 85vh;
+        }
+
+        .column-header {
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .row {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #e2e2e2;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            cursor: move; /* Cambia el cursor para indicar que el elemento es arrastrable */
+        }
+
+        /* Cursor mientras se arrastra */
+        .column.sorting .row {
+            cursor: grabbing; /* Este es el cursor que se muestra mientras se arrastra el elemento */
+        }
+	</style>
+</head>
+<body>
+    <header>
+   
+                 <!-- <button type="button" id="btnReinicia" onclick="reinicia()" class="btn btn-primary" >
+                  Reinicia
+                </button> -->
+           
+            <button id="btnMenuInsertaProfesor" type="button" class="btn btn-primary">
+              Nuevo Profesor
+            </button>
+            	<button type="button" id="btnMenuNuevoCiclo" class="btn btn-primary">
+                  Nuevo Ciclo
+                </button>
+                <button type="button" id="btnMenuNuevoModulo" class="btn btn-primary" data-toggle="modal" data-target="#nuevomodulo">
+                  Nuevo modulo
+                </button>
+               
+              <form action="logout.php" method="POST" style="float:right">
+                <button type="submit" class="btn btn-warning">Cerrar Sesión</button>
+            </form>
+             <p id="nombre-centro" style="float:right">Centro: </p>
+        
+    </header>
+    <input type="hidden" id="idBorrar">
+    <!-- div sortable -->
+     
+    <div id="sortable" style="background-color:blue;display:flex;justify-content: space-between;">
+        <div class="column" id="profesorado">
+           
+
+        </div>
+        <div class="column" id="ciclosmodulos">
+           
+
+        </div>
+    </div>
+   <!-- fin de div sortable -->
+    
+<!-- The Modal -->
+<div class="modal" id="nuevomodulo">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Modulo</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+          <div class="form-group">
+            <label for="nuevoModulo">Ciclo:</label>
+            <select name="listaCiclos" id="listaCiclos">
+                
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="nuevoModulo">Nombre del modulo:</label>
+            <input type="text" class="form-control" placeholder="Nombre del modulo" id="nuevoModulo">
+          </div>
+          <div class="form-group">
+            <label for="horasNuevoModulo">Horas:</label>
+            <input type="number" min="1" max="20" value="1" class="form-control"  id="horasNuevoModulo">
+          </div>
+           <div class="form-group">
+            <label for="nuevoModulo">Tipo:</label>
+            <select name="tipoNuevoModulo" id="tipoNuevoModulo">
+                <option value="PS">PS</option>
+                <option value="PT">PT</option>
+            </select>
+          </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button id="btnInsertaNuevoModulo" type="button" class="btn btn-danger" data-dismiss="modal">Inserta</button>
+        <button style="display:none" id="btnActualizaNuevoModulo" type="button" class="btn btn-danger" data-dismiss="modal">Aceptar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+	<!-- fin de MODAL -->
+	
+
+	
+	
+		<!-- The Modal AÑADE PROFESOR -->
+<div class="modal" id="insertaProfesor">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Docente</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+
+          <div class="form-group">
+            <label for="nombreProfesor">Nombre:</label>
+            <input type="text" class="form-control" placeholder="Escriba el nombre" id="nombreProfesor">
+          </div>
+          <div class="form-group">
+            <label for="tipoProfesor1">Tipo:</label>
+            <select  id="tipoProfesor1">
+                <option value="PS">PS</option>
+                <option value="PT">PT</option>
+            </select>
+          </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button id="btnInsertaProfesor" type="button" class="btn btn-primary" data-dismiss="modal">Inserta</button>
+      </div>
+      <div class="modal-footer">
+        <button id="btnActualizaProfesor" type="button" class="btn btn-primary" data-dismiss="modal">Actualiza</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+	<!-- fin de MODAL AÑADE PROFESOR -->
+	
+	
+		<!-- The Modal AÑADE CICLO -->
+<div class="modal" id="insertaCiclo">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Ciclo y Curso</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+
+          <div class="form-group">
+            <label for="nombreCiclo">CURSO y Nombre :</label>
+            <input type="text" class="form-control" placeholder="Por ejemplo 1ASIR" id="nombreCiclo">
+          </div>
+
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button id="btnInsertaCiclo" type="button" class="btn btn-primary" data-dismiss="modal">Inserta</button>
+      </div>
+      <div class="modal-footer">
+        <button id="btnActualizaCiclo" type="button" class="btn btn-primary" data-dismiss="modal">Actualiza</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+	<!-- fin de MODAL AÑADE CICLO -->
+
+		<!-- The Modal CONFIRMA BORRADO -->
+<div class="modal" id="confirmaborrado">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Confirmar Borrado</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+          <div class="form-group">
+                Confirma que quieres borrarlo
+          </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button id="btnAceptaBorradoModulo" type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+        <button id="btnAceptaBorradoProfe" type="button" class="btn btn-primary" data-dismiss="modal">Aceptar( Profe ) </button>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelaBorradoModulo" type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+	<!-- fin de MODAL AÑADE CICLO -->
+    <script>
+
+    </script>
+	<script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
+	<script src="js/Sortable.min.js"></script>
+	<script src="js/options.js"></script>
+	<!--bootstrap-->
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+ <!-- Enlace CDN para SortableJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <script>
+        // Inicializa Sortable para ambas columnas
+        var columna1 = document.getElementById('profesorado');
+        var columna2 = document.getElementById('ciclosmodulos');
+       
+
+        Sortable.create(columna1, {
+            animation: 150,
+            group: 'shared',  // Permite mover elementos entre columnas
+            // handle: '.row', Indica que el arrastre se iniciará al hacer clic en cualquier fila (div.row)
+            onStart: function(evt) {
+                evt.from.classList.add('sorting'); // Añadir clase al iniciar el arrastre
+            },
+            onEnd: function(evt) {
+                evt.from.classList.remove('sorting'); // Eliminar clase al finalizar el arrastre
+            },
+            onAdd: (evt) => { //AGREGO UN ELEMENTO A LA LISTA DE PROFES
+		elementoAdd = evt.item;
+		//le pongo el nombre del ciclo al final del nombre
+		let ciclo = elementoAdd.getAttribute("ciclo");
+		pintaModuloColocado(elementoAdd);
+		//elementoAdd.innerHTML = elementoAdd.innerHTML + "["+ciclo+"]";
+		let horasAdd = elementoAdd.getAttribute('horas'); //averiguo las horas del elemento añadido
+		let tipoAdd = elementoAdd.getAttribute('tipo'); //averiguo las horas del elemento añadido
+		let idAdd = elementoAdd.getAttribute('id'); //averiguo el id del elemento añadido
+		let padre = elementoAdd.parentElement;
+		//no se puede poner el primero para eso averguo en que posición está
+		esPrimero=false;
+		for (i = 0; i < padre.children.length; i++){
+			let hijo = padre.children[i];
+			let idHijo = hijo.getAttribute('id');
+			if (idHijo == idAdd && i==0 ) {
+				console.log( "indice: "+ i);
+				elementoAdd.parentNode.removeChild(elementoAdd); //borro el elemento si lo ha colocado al principio
+				esPrimero=true;
+				let elementoClonado = document.querySelector("div[clonado='" + idHijo + "'");
+				reiniciaModulo(elementoClonado);
+			}
+		}
+		
+		
+		if (!esPrimero) {
+			encontrado = false;
+			for (i = padre.children.length - 1; i >= 0; i--) { //recorro los elementos hijo del último al primero
+				let hijo = padre.children[i];
+				let idHijo = hijo.getAttribute('id');
+				if ( idHijo == idAdd ) {
+					encontrado = true;
+				}
+				//console.log(hijo);
+				if (hijo.classList.contains("titulo") && encontrado) { //SI ES PROFESOR
+					let horasProfe = 0;
+					if (hijo.getAttribute("horas")) {
+						horasProfe = hijo.getAttribute("horas");
+					}
+					horasProfe = parseInt(horasProfe) + parseInt(horasAdd);
+                    tipoProfe = hijo.getAttribute("tipo"); //averigua el tipo PS o PT del profe
+					hijo.setAttribute("horas", horasProfe); //guarda en el atributo el número de horas
+					nombreProfe = hijo.getAttribute("nombre");
+					if ( tipoAdd!=tipoProfe ){
+					    alert("Vas a signar un modulo de " +tipoAdd + " a docente " + tipoProfe ); 
+					}
+					
+    					pintaProfe(hijo);
+    					//ahora pone el nombre del profe en la lista de la derecha
+    					
+    					let elementoClonado = document.querySelector("div[clonado='" + idAdd + "'");
+    
+    					elementoClonado.innerHTML = elementoClonado.innerHTML + "->" + nombreProfe;
+    					elementoClonado.setAttribute("profe", nombreProfe);
+    					pintaModulo(elementoClonado);
+    					
+    					break;
+				
+				
+				} else { //SI ES UN MÓDULO 
+
+				}
+				horas = hijo.getAttribute('horas');
+			}
+		}
+	}
+          
+        });
+
+        Sortable.create(columna2, {
+            animation: 150,
+            pull: "clone",
+            put: true,
+            group: {
+                name: 'shared',
+                pull: 'clone', // Permitir copiar elementos de lista 1
+                put: true
+            },
+            //group: 'shared',  // Permite mover elementos entre columnas
+             //  handle: '.row', Indica que el arrastre se iniciará al hacer clic en cualquier fila (div.row)
+            onStart: function(evt) {
+                evt.from.classList.add('sorting'); // Añadir clase al iniciar el arrastre
+            },
+            onEnd: function(evt) {
+                evt.from.classList.remove('sorting'); // Eliminar clase al finalizar el arrastre
+            },
+    onClone: function (/**Event*/evt) {
+		var origEl = evt.item;
+		var cloneEl = evt.clone;
+		//console.log(origEl);
+		//console.log(cloneEl);
+		cloneEl.style.color = "red";
+		cloneEl.style.opacity = "0.5";
+		cloneEl.classList.add('titulo');
+		let id = origEl.getAttribute("id");
+		cloneEl.setAttribute("clonado",id); //"Marca" elemento clonado con el atributo "clonado" y el id
+		/*var id = origEl.getAttribute("id");
+
+		let modulos = document.getElementById(id);
+		modulos.style.color = "green";*/
+
+	},
+	onAdd: (evt) => {//cuando "devuelvo un módulo a la lista"
+		elementoAdd = evt.item;
+		let id = elementoAdd.getAttribute("id");
+		let elementoClonado=document.querySelector("div[clonado='"+id+ "'");
+		/*elementoClonado.style.color="black";
+		elementoClonado.style.opacity = 1;
+		elementoClonado.classList.toggle('titulo');
+		elementoClonado.removeAttribute('clonado');*/
+		let nombreProfe = elementoClonado.getAttribute('profe');
+		let profeAsociado= document.querySelector("div[nombre='" + nombreProfe + "'");
+		let horasprofeAsociado = parseInt(profeAsociado.getAttribute("horas"));
+		let horasModulo = parseInt(elementoClonado.getAttribute("horas"));
+		horasprofeAsociado = horasprofeAsociado - horasModulo;
+		profeAsociado.setAttribute("horas", horasprofeAsociado);
+		pintaProfe(profeAsociado);
+
+		reiniciaModulo(elementoClonado);
+		elementoAdd.parentNode.removeChild(elementoAdd); //se elimina el elemento añadido
+		console.log('Se agrego un elemento a la lista') },
+        });
+    </script>
+    <script>
+       
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  apache-php:
+    build:
+      context: ./php-apache
+      dockerfile: Dockerfile
+    container_name: apache-php
+    volumes:
+      - ./app:/var/www/html
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    depends_on:
+      - mariadb
+
+  mariadb:
+    image: mariadb:10.5
+    container_name: mariadb
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_DATABASE=horarios
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=1234
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mariadb_data:
