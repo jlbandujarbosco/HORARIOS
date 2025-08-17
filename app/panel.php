@@ -58,15 +58,27 @@ if (!isset($_SESSION['username'])) {
         .column.sorting .row {
             cursor: grabbing; /* Este es el cursor que se muestra mientras se arrastra el elemento */
         }
+       
+        <?php if ($_SESSION['readonly']): ?>
+           header { display:  none;}
+         <?php endif; ?>
+       
+
 	</style>
 </head>
 <body>
+ 
     <header>
    
                  <!-- <button type="button" id="btnReinicia" onclick="reinicia()" class="btn btn-primary" >
                   Reinicia
                 </button> -->
-           
+        
+                  <button type="button" id="toggle" class="btn btn-danger">
+                      Grabar Datos
+                  </button>
+        
+
             <button id="btnMenuInsertaProfesor" type="button" class="btn btn-primary">
               Nuevo Profesor
             </button>
@@ -76,13 +88,19 @@ if (!isset($_SESSION['username'])) {
                 <button type="button" id="btnMenuNuevoModulo" class="btn btn-primary" data-toggle="modal" data-target="#nuevomodulo">
                   Nuevo modulo
                 </button>
-               
+
+                
+
+                <a href="cambiar_password.php" class="btn btn-secondary" style="float:right; margin-right:10px;">
+                    <?php echo $_SESSION['username']; ?>
+                </a>
               <form action="logout.php" method="POST" style="float:right">
                 <button type="submit" class="btn btn-warning">Cerrar Sesión</button>
             </form>
              <p id="nombre-centro" style="float:right">Centro: </p>
-        
+         
     </header>
+
     <input type="hidden" id="idBorrar">
     <!-- div sortable -->
      

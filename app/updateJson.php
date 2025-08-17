@@ -1,9 +1,6 @@
 <?php
 session_start(); // Iniciar la sesión para acceder a las variables de sesión
-$servername = "localhost";
-$username = "ixl02005_horarios"; // Cambia esto
-$password = "Femb@l8dlm"; // Cambia esto
-$dbname = "ixl02005_horarios";
+require_once 'config.php'; // Incluye la configuración
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 

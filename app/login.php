@@ -1,8 +1,6 @@
 <?php
-$servername = "mariadb";
-$username = "admin";
-$password = "1234";
-$dbname = "horarios";
+
+require_once 'config.php'; // Incluye la configuración
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -27,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Aquí inicias la sesión y rediriges
             session_start();
             $_SESSION['username'] = $user; // Guardas el nombre de usuario en la sesión
-
+            $_SESSION['readonly'] = false;
             // Redirige a la página de inicio o cualquier otra página
             header("Location: panel.php"); // Cambia 'welcome.php' a la página de destino
             exit(); // Asegúrate de llamar a exit después de header para evitar que se ejecute más código
