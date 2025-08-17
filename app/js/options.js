@@ -150,8 +150,8 @@ function cargaDatos(reinicia){
                 //console.log(data);
 
                 // Puedes acceder a las propiedades del objeto, por ejemplo:
-                let cadenaCentro = "Centro:"+ data.centro; // Asumiendo que el JSON original tiene "campo1"
-                document.getElementById("nombre-centro").innerHTML=cadenaCentro;
+                //let cadenaCentro = "Centro:"+ data.centro; // Asumiendo que el JSON original tiene "campo1"
+                
                 horario = data.datos;
                 //bucle sobre el profesorado
           for ( i=0;i<horario.profesorado.length;i++ ) {

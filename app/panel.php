@@ -91,14 +91,19 @@ if (!isset($_SESSION['username'])) {
 
                 
 
-                <a href="cambiar_password.php" class="btn btn-secondary" style="float:right; margin-right:10px;">
-                    <?php echo $_SESSION['username']; ?>
-                </a>
-              <form action="logout.php" method="POST" style="float:right">
-                <button type="submit" class="btn btn-warning">Cerrar Sesión</button>
-            </form>
-             <p id="nombre-centro" style="float:right">Centro: </p>
-         
+        <div class="dropdown" style="float:right; margin-right:10px;">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownUsuario" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <?php echo $_SESSION['username']." (".$_SESSION['centro'].")"; ?>
+    </button>
+    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownUsuario">
+        <a class="dropdown-item" href="cambiar_password.php">Cambiar contraseña</a>
+        <a class="dropdown-item" href="logout.php">Cerrar Sesión</a>
+    </div>
+</div>
+
+
+             <p id="nombre-centro" style="display:none">Centro: </p>
+
     </header>
 
     <input type="hidden" id="idBorrar">

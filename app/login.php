@@ -26,6 +26,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             session_start();
             $_SESSION['username'] = $user; // Guardas el nombre de usuario en la sesión
             $_SESSION['readonly'] = false;
+            $_SESSION['centro'] = $row['centro'];
+
             // Redirige a la página de inicio o cualquier otra página
             header("Location: panel.php"); // Cambia 'welcome.php' a la página de destino
             exit(); // Asegúrate de llamar a exit después de header para evitar que se ejecute más código
